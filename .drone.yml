@@ -5,7 +5,7 @@ name: build
 
 steps:
 - name: build-image
-  image: docker/docker
+  image: docker
   volumes:
     - name: dockersock
       path: /var/run/docker.sock
