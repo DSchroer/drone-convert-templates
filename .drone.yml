@@ -4,4 +4,15 @@ type: docker
 name: build
 
 steps:
-- template: compose-deploy
+- name: build-image
+  image: docker/docker
+  volumes:
+    - name: dockersock
+      path: /var/run/docker.sock
+  commands:
+    - docker build . -t ${DRONE_REPO_NAME}:${DRONE_BUILD_NUMBER}
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
