@@ -6,6 +6,8 @@ steps:
       GOOGLE_CREDENTIALS:
         from_secret: gcp_credentials
     commands:
+      - DIR=$(pwd)
       - cd {{choose work_dir '.'}}
       - VARIABLE=$(terraform output -raw {{output}})
+      - cd $DIR
       - echo $VARIABLE > {{file}}
