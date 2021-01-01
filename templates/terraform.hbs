@@ -1,6 +1,6 @@
 ---
 steps:
-  - name: terraform
+  - name: {{choose name 'terraform-apply'}}
     image: hashicorp/terraform
     environment:
       GOOGLE_CREDENTIALS:
