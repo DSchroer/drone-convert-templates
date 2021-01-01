@@ -7,5 +7,5 @@ steps:
         from_secret: gcp_credentials
     commands:
       - cd {{choose work_dir '.'}}
-      - $VARIABLE=$(terraform output -raw {{output}})
+      - VARIABLE=$(terraform output -raw {{output}})
       - echo $VARIABLE > {{file}}
