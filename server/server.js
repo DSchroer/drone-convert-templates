@@ -14,7 +14,7 @@ const yaml = require('js-yaml');
         const configYaml = yaml.safeLoad(config);
         const resYaml = process(configYaml, known);
         
-        res.json({ data: resYaml });
+        res.json({ data: yaml.safeDump(resYaml) });
     });
 
     app.listen(8080, () => {
