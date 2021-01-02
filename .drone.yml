@@ -18,18 +18,8 @@ steps:
   commands:
     - docker build . -t ${DRONE_REPO_NAME}:${DRONE_BUILD_NUMBER}
 
-- name: mirror
-  image: alpine/git
-  environment:
-    SSH_KEY:
-      from_secret: github_credentials
-    GITHUB_HOST: AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
-  commands: 
-    - mkdir ~/.ssh && echo "$SSH_KEY" > ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
-    - echo "github.com,140.82.113.3 ssh-rsa $GITHUB_HOST" > ~/.ssh/known_hosts
-    - git clone --mirror ${DRONE_GIT_HTTP_URL}
-    - cd ${DRONE_REPO_NAME}.git
-    - git push --mirror git@github.com:DSchroer/drone-convert-templates.git
+- template: github-mirror
+  repo: git@github.com:DSchroer/drone-convert-templates.git
 
 volumes:
 - name: dockersock
