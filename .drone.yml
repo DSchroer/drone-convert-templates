@@ -8,7 +8,6 @@ steps:
   image: node
   commands:
     - npm ci
-    - npm test
     - npm run build
 
 - name: build-image
