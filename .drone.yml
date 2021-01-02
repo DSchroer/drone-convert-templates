@@ -25,6 +25,7 @@ steps:
       from_secret: github_credentials
   commands: 
     - mkdir ~/.ssh && echo "$SSH_KEY" > ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
+    - export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa"
     - git clone --mirror ${DRONE_GIT_HTTP_URL}
     - cd ${DRONE_REPO_NAME}.git
     - git push --mirror git@github.com:DSchroer/drone-convert-templates.git
