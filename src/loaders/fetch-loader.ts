@@ -4,10 +4,12 @@ import Handlebars from "handlebars";
 
 import { RawTemplate, TemplateFactory, TemplateLoader } from "./template-loader";
 import { DroneDoc, DroneStep, TemplateStep } from "../drone-doc";
+import { registerHelpers } from "../helpers";
 
 export class FetchLoader implements TemplateLoader {
 
     constructor(private readonly baseUrl: string, private readonly ext: string = ".hbs"){
+        registerHelpers();
     }
 
     async loadTemplate(name: string): Promise<TemplateFactory> {
