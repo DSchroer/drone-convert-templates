@@ -1,7 +1,7 @@
 FROM node
 
 COPY *.json ./
-RUN npm ci
+RUN npm ci --production
 
 COPY dist dist
 
