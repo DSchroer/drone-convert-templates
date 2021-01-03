@@ -1,4 +1,4 @@
-FROM node
+FROM node:alpine3.10
 
 COPY *.json ./
 RUN npm ci --production
