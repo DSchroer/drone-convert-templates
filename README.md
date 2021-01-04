@@ -2,9 +2,13 @@
 
 Simplify and share your drone pipeline steps using templates. Rather than copy-pasting large steps between projects, define a template and reference it. 
 
+The `drone-convert-templates` acts as a [conversion extension](https://docs.drone.io/extensions/conversion/). When a built starts, it is sent the build pipeline source then it loads the templates and returns a full build with all the template data filled in. It loads the templates from an external server so they are easy to modify.
+
+**NOTE**: This plugin assumes that you are in a trusted self hosted environment.
+
 ## Example
 
-Reference a template step by creating a step using the `template` keyword. This will be converted by the plugin and return a filled out build step.
+Reference a template by creating a step using the `template` keyword. This will be converted by the plugin and return a filled out build step.
 
 `.drone.yml`:
 
@@ -18,17 +22,17 @@ steps:
   - template: my-build-template
 ```
 
-Elsewhere define a template that contains the full build step. You can use handlebars templates to pass variables to the templates. 
+Elsewhere define a template that contains the full build step. You can use handlebars templates to pass variables to the template. 
 
 `my-build-template.hbs`:
 
 ```hbs
 ---
 steps:
-  - name: {{choose name 'example-template'}}
+  - name: template-example
     image: alpine
     commands:
-      - echo "Hello world!"
+      - echo "Hello world from template!"
 ```
 
 ## Installation:
