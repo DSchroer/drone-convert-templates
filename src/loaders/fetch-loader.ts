@@ -1,4 +1,4 @@
-import { parse } from "https://deno.land/std@0.83.0/encoding/yaml.ts";
+import { yaml } from "../deps.ts";
 
 import {
   RawTemplate,
@@ -10,7 +10,6 @@ import { registerHelpers } from "../helpers.ts";
 import { compile } from "../utils/handlebars.ts";
 
 export class FetchLoader implements TemplateLoader {
-
   constructor(
     private readonly baseUrl: string,
     private readonly ext: string = ".hbs",
@@ -31,7 +30,7 @@ export class FetchLoader implements TemplateLoader {
 
     return async (step: TemplateStep) => {
       const rendered = template(step);
-      const yamlData = <RawTemplate> parse(rendered);
+      const yamlData = <RawTemplate> yaml.parse(rendered);
 
       const steps = <DroneStep[]> yamlData.steps;
       delete yamlData.steps;
