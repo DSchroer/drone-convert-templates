@@ -4,19 +4,21 @@ type: docker
 name: build
 
 steps:
-- name: test
-  image: node
-  commands:
-    - npm ci
-    - npm run build
-
 - name: build-image
   image: docker
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_credentials
   volumes:
     - name: dockersock
       path: /var/run/docker.sock
   commands:
+    - docker login -u dschroer -p $DOCKER_PASSWORD
     - docker build . -t ${DRONE_REPO_NAME}:${DRONE_BUILD_NUMBER}
+    - docker tag ${DRONE_REPO_NAME}:${DRONE_BUILD_NUMBER} dschroer/drone-convert-templates:${DRONE_BUILD_NUMBER}
+    - docker push dschroer/drone-convert-templates:${DRONE_BUILD_NUMBER}
+    - docker tag ${DRONE_REPO_NAME}:${DRONE_BUILD_NUMBER} dschroer/drone-convert-templates:latest
+    - docker push dschroer/drone-convert-templates:latest
 
 - template: github-mirror
   repo: git@github.com:DSchroer/drone-convert-templates.git
