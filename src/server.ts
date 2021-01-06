@@ -12,20 +12,25 @@ const loader = new FetchLoader(templateUrl);
 
 const router = new oak.Router();
 router.post("/", async (ctx) => {
-  try {
-    const bodyJson = await ctx.request.body({ type: "json" });
-    const body = await bodyJson.value;
+  const bodyJson = await ctx.request.body({ type: "json" });
+  const body = await bodyJson.value;
+  const configYaml = yaml.parse(body.config.data) as DroneDoc;
+  
+  const resYaml = await applyTemplates(configYaml, loader);
 
-    const configYaml = yaml.parse(body.config.data) as DroneDoc;
-    const resYaml = await applyTemplates(configYaml, loader);
-
-    ctx.response.body = { data: yaml.stringify(resYaml) };
-  } catch (e) {
-    ctx.response.body = JSON.stringify({ error: e });
-  }
+  ctx.response.body = { data: yaml.stringify(resYaml) };
 });
 
 const app = new oak.Application();
 
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (e) {
+    ctx.response.status = 500;
+    ctx.response.body = JSON.stringify({ error: e });
+  }
+});
 app.use(router.routes());
+
 await app.listen({ port: 8080 });

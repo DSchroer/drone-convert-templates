@@ -6,7 +6,7 @@ import {
   TemplateLoader,
 } from "./template-loader.ts";
 import { DroneDoc, DroneStep, TemplateStep } from "../drone-doc.ts";
-import { registerHelpers } from "../helpers.ts";
+import { registerHelpers } from "../utils/helpers.ts";
 import { compile } from "../utils/handlebars.ts";
 
 export class FetchLoader implements TemplateLoader {
