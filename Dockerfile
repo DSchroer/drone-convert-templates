@@ -1,8 +1,10 @@
-FROM node
+FROM hayd/alpine-deno:1.5.2
 
-COPY *.json ./
-RUN npm ci --production
+WORKDIR /var/app
 
-COPY dist dist
+COPY src src
+COPY lock.json lock.json
 
-ENTRYPOINT npm start
+RUN deno cache -r --lock lock.json src/server.ts
+
+ENTRYPOINT deno run --unstable --allow-env --allow-net --lock lock.json src/server.ts

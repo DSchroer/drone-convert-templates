@@ -1,30 +1,36 @@
-import Koa from "koa";
-import Router from "@koa/router";
-import Yaml from "js-yaml";
-import json from "koa-json"
-import bodyParser from "koa-bodyparser";
+import {
+  parse,
+  stringify,
+} from "https://deno.land/std@0.83.0/encoding/yaml.ts";
+import { Application, Router } from "https://deno.land/x/oak@v6.4.1/mod.ts";
 
-import { applyTemplates } from "./apply-templates";
-import { DroneDoc } from "./drone-doc";
-import { FetchLoader } from "./loaders/fetch-loader";
+import { applyTemplates } from "./apply-templates.ts";
+import { DroneDoc } from "./drone-doc.ts";
+import { FetchLoader } from "./loaders/fetch-loader.ts";
 
-const templateUrl = process.env.TEMPLATE_URL;
-if(!templateUrl){
-    throw new Error("TEMPLATE_URL variable is required.")
+const templateUrl = Deno.env.get("TEMPLATE_URL");
+if (!templateUrl) {
+  throw new Error("TEMPLATE_URL variable is required.");
 }
 
 const loader = new FetchLoader(templateUrl);
 
 const router = new Router();
-router.post('/', async (ctx) => {
-    const configYaml = <DroneDoc>Yaml.safeLoad(ctx.request.body.config.data);
+router.post("/", async (ctx) => {
+  try {
+    const bodyJson = await ctx.request.body({ type: "json" });
+    const body = await bodyJson.value;
+
+    const configYaml = parse(body.config.data) as DroneDoc;
     const resYaml = await applyTemplates(configYaml, loader);
-    ctx.body = { data: Yaml.safeDump(resYaml) };
+
+    ctx.response.body = { data: stringify(resYaml) };
+  } catch (e) {
+    ctx.response.body = JSON.stringify({ error: e });
+  }
 });
 
-const app = new Koa();
+const app = new Application();
 
-app.use(bodyParser());
-app.use(json());
 app.use(router.routes());
-app.listen(8080);
+await app.listen({ port: 8080 });
