@@ -14,11 +14,19 @@ const router = new oak.Router();
 router.post("/", async (ctx) => {
   const bodyJson = await ctx.request.body({ type: "json" });
   const body = await bodyJson.value;
-  const configYaml = yaml.parse(body.config.data) as DroneDoc;
-  
-  const resYaml = await applyTemplates(configYaml, loader);
+  let configYaml = yaml.parseAll(body.config.data) as DroneDoc | DroneDoc[];
 
-  ctx.response.body = { data: yaml.stringify(resYaml) };
+  if (!Array.isArray(configYaml)) {
+    configYaml = [configYaml];
+  }
+
+  const resDocs = await Promise.all(
+    configYaml.map((yml) => applyTemplates(yml, loader)),
+  );
+  const pipelines = resDocs.map((doc) => yaml.stringify(doc));
+  const pipeline = pipelines.join("\n---\n");
+
+  ctx.response.body = { data: pipeline };
 });
 
 const app = new oak.Application();

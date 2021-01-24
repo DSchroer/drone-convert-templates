@@ -12,7 +12,7 @@
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "deno",
             "env": {
-                "TEMPLATE_URL": "http://gitea.swhome.ca/dschroer/server-dev/raw/branch/master/templates/src/"
+                "TEMPLATE_URL": "http://gitea.swhome.ca/dschroer/build-templates/raw/branch/master/templates/"
             },
             "runtimeArgs": [
                 "run",
